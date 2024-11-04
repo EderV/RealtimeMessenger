@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.12.14-management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'    # AMQP port
+      - '15672:15672'  # Management UI
+      - '61613:61613'  # STOMP over TCP port for Spring Boot
+      - '15674:15674'  # Web STOMP (WebSocket) port
+    command: >
+      sh -c "rabbitmq-plugins enable --offline rabbitmq_management rabbitmq_web_stomp && rabbitmq-server"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  mongodb:
+    image: mongo:8.0.1
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
